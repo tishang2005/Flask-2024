@@ -65,4 +65,4 @@ with test.app_context():
     print("Database tables created successfully!")
 
 if __name__ == "__main__":
-    test.run(debug=True, port=8800)
+    test.run(debug=False, port=8800)

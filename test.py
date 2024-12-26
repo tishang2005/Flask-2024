@@ -3,10 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import request #http request access
 from datetime import datetime
 
-test = Flask(__name__)
-test.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///todo.db"
-test.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(test)
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///todo.db"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 class Todo(db.Model):#
     sno = db.Column(db.Integer, primary_key=True)
@@ -17,7 +17,7 @@ class Todo(db.Model):#
     def __repr__(self) -> str:#
         return f"{self.sno} - {self.title}"#
 
-@test.route('/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def hello_world():
     if request.method == 'POST':
         # print(request.form['title'])
@@ -31,13 +31,13 @@ def hello_world():
     return render_template('Netfilx.htm', allTodo=allTodo)
     # return 'Hello, World!'
 
-@test.route('/show')
+@app.route('/show')
 def products():
     allTodo = Todo.query.all()
     print(allTodo)
     return 'this is products page'
 
-@test.route('/update/<int:sno>', methods=['GET', 'POST'])
+@app.route('/update/<int:sno>', methods=['GET', 'POST'])
 def update(sno):
     if request.method=='POST':
         title = request.form['title']
@@ -52,7 +52,7 @@ def update(sno):
     todo = Todo.query.filter_by(sno=sno).first()
     return render_template('update.html', todo=todo)
 
-@test.route('/delete/<int:sno>')
+@app.route('/delete/<int:sno>')
 def delete(sno):
     todo = Todo.query.filter_by(sno=sno).first()
     db.session.delete(todo)
@@ -60,6 +60,6 @@ def delete(sno):
     return redirect("/")
 
 # Create database tables
-with test.app_context():
+with app.app_context():
     db.create_all()
     print("Database tables created successfully!")
